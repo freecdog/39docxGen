@@ -30,10 +30,52 @@ html(ng-app="jDocxApp")
                         a(href ng-click="tab.setTab(2)") Info
 
                 //- PREDICTION GAME PREDICTION GAME PREDICTION GAME PREDICTION GAME PREDICTION GAME PREDICTION GAME
-                div(ng-show="tab.isSet(0)" class="text-center")
+                div(ng-show="tab.isSet(0)" ng-controller="ReportController as ReportCtrl")
                     div(class="container-fluid")
                         div(class="row")
                             h2 Hi!
+
+                    div(class="container-fluid")
+                        div(class="row")
+                            form(name="reportForm" ng-submit="doReport()")
+
+                                //- Review Form Review Form Review Form Review Form Review Form Review Form Review Form
+                                h4 Submit a TODO
+                                fieldset(class="form-group")
+                                    div(class="form-group")
+                                        label(class="col-lg-2 control-label") Фамилия
+                                        div(class="col-lg-10")
+                                            input(ng-model="newReport.lastName" name="author" type="text" class="form-control" placeholder="Фамилия" title="Name" ng-minlength="1" ng-maxlength="100")
+                                fieldset(class="form-group")
+                                    div(class="form-group")
+                                        label(class="col-lg-2 control-label") Имя
+                                        div(class="col-lg-10")
+                                            input(ng-model="newReport.firstName" name="author" type="text" class="form-control" placeholder="Имя" title="Name" ng-minlength="1" ng-maxlength="100")
+                                fieldset(class="form-group")
+                                    div(class="form-group")
+                                        label(class="col-lg-2 control-label") Отчество
+                                        div(class="col-lg-10")
+                                            input(ng-model="newReport.patronymic" name="author" type="text" class="form-control" placeholder="Отчество" title="Name" ng-minlength="1" ng-maxlength="100")
+                                fieldset(class="form-group")
+                                    input(type="submit" class="btn pull-right" ng-class="{'btn-default': !reportForm.$valid, 'btn-primary': reportForm.$valid}" value="Submit TODO" ng-click="reportForm.$valid && ReportCtrl.addTODO()")
+
+
+                                //- Live Preview
+                                blockquote()
+                                    span Вы ввели:
+                                    br
+                                    span {{newReport.lastName ? "" : "&nbsp;"}}{{newReport.lastName}}
+                                        span(class="error" ng-show="reportForm.lastName.$error.maxlength") My apologize, but it's too much
+                                    br
+                                    span {{newReport.firstName ? "" : "&nbsp;"}}{{newReport.firstName}}
+                                        span(class="error" ng-show="reportForm.firstName.$error.maxlength") My apologize, but it's too much
+                                    br
+                                    span {{newReport.patronymic ? "" : "&nbsp;"}}{{newReport.patronymic}}
+                                        span(class="error" ng-show="reportForm.patronymic.$error.maxlength") My apologize, but it's too much
+
+                                h1(ng-show="visibleShitLink" class="pull-right")
+                                    a(href="http://188.187.61.24:14741/docs/output.docx" class="btn btn-primary btn-block") Скачать
+
 
 
                 //- TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO

@@ -485,6 +485,76 @@
         };
     }]);
 
+    jDocxControllers.controller('ReportController', ['$scope', '$http', function($scope, $http){
+
+        init();
+
+        function init(){
+            console.log("TODOController initializing");
+
+            clearReport();
+            $scope.visibleShitLink = false;
+
+            $scope.iconsForTODOs = ['glyphicon-ok', 'glyphicon-remove'];
+            $scope.colorsForTODOs = ['text-muted', 'text-primary', 'text-warning', 'text-danger', 'text-success', 'text-info'];
+        }
+
+        function clearReport(){
+            $scope.newReport = {
+                lastName: "",
+                firstName: "",
+                patronymic: "",
+                createdOn: ""
+            };
+        }
+
+        this.addTODO = function(){
+            console.log('trying to add, Report:', $scope.newReport);
+            $scope.newReport.createdOn = Date.now();
+
+
+
+            $http.post('/api/doc', $scope.newReport)
+                .success(function(data) {
+
+                    $scope.visibleShitLink = true;
+
+                    console.warn("There is return, coz it won't work");
+                    return;
+
+                    var doc = data.doc;
+                    var data64 = atob(data.doc64);
+                    console.warn(doc.length == data64.length);
+                    for (var i = 0, len = doc.length; i < len; i++){
+                        if (doc[i] != data64[i]){
+                            console.warn(doc[i], '!=', data64[i], '; pos:', i);
+                            break;
+                        }
+                    }
+                    data = data.doc;
+
+                    console.log("new Report posted successfully, response:", data);
+                    //console.warn("data64:", data64);
+
+                    //var blob = new Blob([data], {type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+                    //var blob = new Blob([data], {type: 'application/msword'});
+                    var blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+                    var url = (window.URL || window.webkitURL).createObjectURL(blob);
+                    var element = angular.element('<a/>');
+                    element.attr({
+                        href: url,
+                        target: '_blank',
+                        download: $scope.newReport.lastName + '.docx'
+                    })[0].click();
+
+                    clearReport();
+                })
+                .error(function(err){
+                    console.log("todo wasn't added, error:", err);
+                });
+        };
+    }]);
+
     jDocxControllers.filter('percentage', ['$filter', function ($filter) {
         return function (input, decimals) {
             return $filter('number')(input * 100, decimals) + '%';
