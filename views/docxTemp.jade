@@ -16,9 +16,7 @@ html(ng-app="jDocxApp")
         //-link(rel='stylesheet' href='/bootstrap/css/bootstrap-theme.css')
         script(src='/javascripts/ui-bootstrap-tpls-0.12.0.js')
     body(ng-controller="jDocxMainController")
-        div(ng-hide="true")
-            div(class="container text-center")
-                h1= title
+
         div(class="container-fluid")
             section(class="tab" ng-controller="TabController as tab")
                 ul(class="nav nav-tabs")
@@ -31,16 +29,13 @@ html(ng-app="jDocxApp")
 
                 //- PREDICTION GAME PREDICTION GAME PREDICTION GAME PREDICTION GAME PREDICTION GAME PREDICTION GAME
                 div(ng-show="tab.isSet(0)" ng-controller="ReportController as ReportCtrl")
-                    div(class="container-fluid")
-                        div(class="row")
-                            h2 Hi!
 
                     div(class="container-fluid")
                         div(class="row")
                             form(name="reportForm" ng-submit="doReport()")
 
                                 //- Review Form Review Form Review Form Review Form Review Form Review Form Review Form
-                                h4 Submit a TODO
+                                h4 Заполните форму (лист аттестации):
                                 fieldset(class="form-group")
                                     div(class="form-group")
                                         label(class="col-lg-2 control-label") Фамилия
@@ -60,6 +55,9 @@ html(ng-app="jDocxApp")
                                     input(type="submit" class="btn pull-right" ng-class="{'btn-default': !reportForm.$valid, 'btn-primary': reportForm.$valid}" value="Submit TODO" ng-click="reportForm.$valid && ReportCtrl.addTODO()")
 
 
+                                h1(ng-show="visibleShitLink" class="pull-right")
+                                    a(href="http://188.187.61.24:14741/docs/output.docx" class="btn btn-primary btn-block") Скачать
+
                                 //- Live Preview
                                 blockquote()
                                     span Вы ввели:
@@ -73,8 +71,7 @@ html(ng-app="jDocxApp")
                                     span {{newReport.patronymic ? "" : "&nbsp;"}}{{newReport.patronymic}}
                                         span(class="error" ng-show="reportForm.patronymic.$error.maxlength") My apologize, but it's too much
 
-                                h1(ng-show="visibleShitLink" class="pull-right")
-                                    a(href="http://188.187.61.24:14741/docs/output.docx" class="btn btn-primary btn-block") Скачать
+
 
 
 
