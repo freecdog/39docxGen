@@ -59,10 +59,12 @@ router.get("/doc", function(req, res){
 
 });
 router.post("/doc", function(req, res){
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     //Load the docx file as a binary
-    fs.readFile("./public/docs/jatt3.docx", "binary", function(err, content) {
-        doc = new Docxtemplater(content);
+    var dirPath = path.join(__dirname, '..', 'public', 'docs');
+    fs.readFile(path.join(dirPath, 'jatt3.docx'), "binary", function(err, content) {
+        var doc = new Docxtemplater(content);
 
         //set the templateVariables
         // TODO there should be scheme
@@ -83,13 +85,43 @@ router.post("/doc", function(req, res){
         var buf = doc.getZip()
             .generate({type:"nodebuffer"});
 
-        // TODO name should be random, because if two streams will use one file, it will lead to an error
-        var finalFilePath = path.join(__dirname, '..', 'public', 'docs', 'output.docx');
+        var finalFilePath = path.join(dirPath, 'rep' + ip + 'at' + (new Date()).getTime() + '.docx');
         fs.writeFile(finalFilePath, buf, function (err) {
-            //console.log(finalFilePath);
+            res.sendFile(finalFilePath);
+        });
+    });
 
-            //res.sendFile(finalFilePath);
+});
 
+router.post("/docAsParam", function(req, res){
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+    //Load the docx file as a binary
+    var dirPath = path.join(__dirname, '..', 'public', 'docs');
+    fs.readFile(path.join(dirPath, 'jatt3.docx'), "binary", function(err, content) {
+        var doc = new Docxtemplater(content);
+
+        //set the templateVariables
+        // TODO there should be scheme
+        var scheme = {
+            lastName: "Иванов",
+            firstName: "Иван",
+            patronymic: "Иванович"
+        };
+        var newModel = {};
+        _.extend(newModel, scheme);
+        _.extend(newModel, req.body);
+
+        doc.setData(newModel);
+
+        //apply them (replace all occurences of {___} by ___, ...)
+        doc.render();
+
+        var buf = doc.getZip()
+            .generate({type:"nodebuffer"});
+
+        var finalFilePath = path.join(dirPath, 'rep' + ip + 'at' + (new Date()).getTime() + '.docx');
+        fs.writeFile(finalFilePath, buf, function (err) {
             res.send( {
                 doc: buf,
                 doc64: buf.toString('base64')

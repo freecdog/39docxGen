@@ -10,6 +10,7 @@
 
     var jDocxApp = angular.module('jDocxApp', [
         //'ngRoute',
+        'ui.bootstrap',
         'jDocxControllers'
     ]);
     console.log("jDocxApp", jDocxApp);
