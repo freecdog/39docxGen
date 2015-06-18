@@ -140,17 +140,18 @@
         };
 
         this.generateReportAlternative = function(){
-            console.log('trying to add, Report:', $scope.newReport);
+            console.log('trying to add, ReportAlternative:', $scope.newReport);
             $scope.newReport.createdOn = Date.now();
 
-            $http.post('/api/docAsParam', $scope.newReport, {responseType:'arraybuffer'})
+            $http.post('/api/docAsParam', $scope.newReport)//, {responseType:'arraybuffer'})
                 .success(function(data) {
+                    //console.log(data);
 
-//                    console.warn("There is return, coz it won't work");
-//                    return;
+                    var dataRaw = data.doc;
+                    //console.log(dataRaw);
+                    var data64 = atob(data.doc64);
+                    //console.log(data64);
 
-//                    var doc = data.doc;
-//                    var data64 = atob(data.doc64);
 //                    console.warn(doc.length == data64.length);
 //                    for (var i = 0, len = doc.length; i < len; i++){
 //                        if (doc[i] != data64[i]){
@@ -160,13 +161,13 @@
 //                    }
 //                    data = data.doc;
 
-                    console.log("new Report posted successfully, response:", data);
-                    //console.warn("data64:", data64);
+//                    console.log("new Report posted successfully, response:", data);
 
-                    //var blob = new Blob([data], {type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
-                    //var blob = new Blob([data], {type: 'application/msword'});
-                    var blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+                    var blob = new Blob([dataRaw], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+                    var blob64 = new Blob([data64], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+
                     var url = (window.URL || window.webkitURL).createObjectURL(blob);
+
                     var element = angular.element('<a/>');
                     element.attr({
                         href: url,
