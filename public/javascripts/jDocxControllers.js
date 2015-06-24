@@ -139,34 +139,57 @@
                 });
         };
 
-        this.generateReportAlternative = function(){
+        this.generateReportAlternativeRaw = function(){
             console.log('trying to add, ReportAlternative:', $scope.newReport);
             $scope.newReport.createdOn = Date.now();
 
-            $http.post('/api/docAsParam', $scope.newReport)//, {responseType:'arraybuffer'})
+            $http.post('/api/docAsParamRaw', $scope.newReport)//, {responseType:'arraybuffer'})
                 .success(function(data) {
-                    //console.log(data);
 
-                    var dataRaw = data.doc;
-                    //console.log(dataRaw);
-                    var data64 = atob(data.doc64);
-                    //console.log(data64);
-
-//                    console.warn(doc.length == data64.length);
-//                    for (var i = 0, len = doc.length; i < len; i++){
-//                        if (doc[i] != data64[i]){
-//                            console.warn(doc[i], '!=', data64[i], '; pos:', i);
-//                            break;
-//                        }
-//                    }
-//                    data = data.doc;
-
-//                    console.log("new Report posted successfully, response:", data);
-
+                    function ab2str(buf) {
+                        return String.fromCharCode.apply(null, new Uint8Array(buf));
+                    }
+                    var dataRaw = ab2str(data.doc);
                     var blob = new Blob([dataRaw], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
-                    var blob64 = new Blob([data64], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
 
                     var url = (window.URL || window.webkitURL).createObjectURL(blob);
+
+                    var element = angular.element('<a/>');
+                    element.attr({
+                        href: url,
+                        target: '_blank',
+                        download: 'doc' + $scope.newReport.lastName + '.docx'
+                    })[0].click();
+
+                    clearReport();
+                })
+                .error(function(err){
+                    console.log("todo wasn't added, error:", err);
+                });
+        };
+
+        this.generateReportAlternativeBase64 = function(){
+            console.log('trying to add, ReportAlternative:', $scope.newReport);
+            $scope.newReport.createdOn = Date.now();
+
+            $http.post('/api/docAsParamBase64', $scope.newReport)//, {responseType:'arraybuffer'})
+                .success(function(data) {
+                    // from: http://stackoverflow.com/a/21797381
+                    function base64ToArrayBuffer(base64) {
+                        var binary_string =  window.atob(base64);
+                        var len = binary_string.length;
+                        var bytes = new Uint8Array( len );
+                        for (var i = 0; i < len; i++)        {
+                            bytes[i] = binary_string.charCodeAt(i);
+                        }
+                        return bytes.buffer;
+                    }
+
+                    var data64 = base64ToArrayBuffer(data.doc64); // atob(data.doc64);
+
+                    var blob64 = new Blob([data64], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+
+                    var url = (window.URL || window.webkitURL).createObjectURL(blob64);
 
                     var element = angular.element('<a/>');
                     element.attr({

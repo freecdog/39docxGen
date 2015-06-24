@@ -22,42 +22,7 @@ router.post("/todo", function(req, res){
     res.send("new todo added successfully");
 });
 
-router.get("/doc", function(req, res){
-
-    //Load the docx file as a binary
-    fs.readFile("./public/docs/jatt3.docx","binary", function(err, content) {
-        doc = new Docxtemplater(content);
-
-        //set the templateVariables
-        doc.setData({
-            "first_name":"Hipp",
-            "last_name":"Edgar",
-            "full_name": "Hi there",
-            "phone":"0652455478",
-            "description":"New Website",
-
-            lastName: "Иванов",
-            firstName: "Иван",
-            patronymic: "Иванович"
-        });
-
-        //apply them (replace all occurences of {first_name} by Hipp, ...)
-        doc.render();
-
-        var buf = doc.getZip()
-            .generate({type:"nodebuffer"});
-
-        fs.writeFile("./public/docs/output.docx", buf, function (err) {
-            var sendingFilePath = path.join(__dirname, '..', 'public', 'docs', 'output.docx');
-            //console.log(sendingFilePath);
-            res.sendFile(sendingFilePath);
-        });
-        //fs.writeFile("./public/docs/output.docx",buf, function(){
-            //res.send("prolly done");
-            //res.sendFile(__dirname + "/../public/docs/output.docx");
-    });
-
-});
+// it sends the least bytes (50557 bytes)
 router.post("/doc", function(req, res){
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
@@ -93,7 +58,8 @@ router.post("/doc", function(req, res){
 
 });
 
-router.post("/docAsParam", function(req, res){
+// it sends the most bytes (178596 bytes)
+router.post("/docAsParamRaw", function(req, res){
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     //Load the docx file as a binary
@@ -123,12 +89,47 @@ router.post("/docAsParam", function(req, res){
         var finalFilePath = path.join(dirPath, 'rep' + ip + 'at' + (new Date()).getTime() + '.docx');
         fs.writeFile(finalFilePath, buf, function (err) {
             res.send( {
-                doc: buf,
+                doc: buf
+            } );
+        });
+    });
+});
+
+// it sends less bytes (67424 bytes)
+router.post("/docAsParamBase64", function(req, res){
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+    //Load the docx file as a binary
+    var dirPath = path.join(__dirname, '..', 'public', 'docs');
+    fs.readFile(path.join(dirPath, 'jatt3.docx'), "binary", function(err, content) {
+        var doc = new Docxtemplater(content);
+
+        //set the templateVariables
+        // TODO there should be scheme
+        var scheme = {
+            lastName: "Иванов",
+            firstName: "Иван",
+            patronymic: "Иванович"
+        };
+        var newModel = {};
+        _.extend(newModel, scheme);
+        _.extend(newModel, req.body);
+
+        doc.setData(newModel);
+
+        //apply them (replace all occurences of {___} by ___, ...)
+        doc.render();
+
+        var buf = doc.getZip()
+            .generate({type:"nodebuffer"});
+
+        var finalFilePath = path.join(dirPath, 'rep' + ip + 'at' + (new Date()).getTime() + '.docx');
+        fs.writeFile(finalFilePath, buf, function (err) {
+            res.send( {
                 doc64: buf.toString('base64')
             } );
         });
     });
-
 });
 
 module.exports = router;

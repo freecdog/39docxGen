@@ -55,8 +55,10 @@ html(ng-app="jDocxApp")
                                     input(type="submit" class="btn pull-right" ng-class="{'btn-default': !reportForm.$valid, 'btn-primary': reportForm.$valid}" value="Generate report" ng-click="reportForm.$valid && ReportCtrl.generateReport()")
 
                                 fieldset(class="form-group")
-                                    input(type="submit" class="btn pull-right" ng-class="{'btn-default': !reportForm.$valid, 'btn-primary': reportForm.$valid}" value="Generate report (file as param)" ng-click="reportForm.$valid && ReportCtrl.generateReportAlternative()")
+                                    input(type="submit" class="btn pull-right" ng-class="{'btn-default': !reportForm.$valid, 'btn-primary': reportForm.$valid}" value="Generate report (file as param Raw)" ng-click="reportForm.$valid && ReportCtrl.generateReportAlternativeRaw()")
 
+                                fieldset(class="form-group")
+                                    input(type="submit" class="btn pull-right" ng-class="{'btn-default': !reportForm.$valid, 'btn-primary': reportForm.$valid}" value="Generate report (file as param Base64)" ng-click="reportForm.$valid && ReportCtrl.generateReportAlternativeBase64()")
 
                                 //- Live Preview
                                 blockquote()
