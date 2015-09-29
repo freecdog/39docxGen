@@ -52,7 +52,7 @@ router.post("/doc", function(req, res){
         var buf = doc.getZip()
             .generate({type:"nodebuffer"});
 
-        var finalFilePath = path.join(dirPath, 'rep' + ip + 'at' + (new Date()).getTime() + '.docx');
+        var finalFilePath = path.join(dirPath, 'rep' + ip + 'at' + (new Date()).getTime().toString() + '.docx');
         fs.writeFile(finalFilePath, buf, function (err) {
             if (err) throw err;
             res.sendFile(finalFilePath);
