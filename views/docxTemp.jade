@@ -51,14 +51,18 @@ html(ng-app="jDocxApp")
                                         label(class="col-lg-2 control-label") Отчество
                                         div(class="col-lg-10")
                                             input(ng-model="newReport.patronymic" name="author" type="text" class="form-control" placeholder="Отчество" title="Name" ng-minlength="1" ng-maxlength="100")
-                                fieldset(class="form-group" ng-hide="true")
+                                fieldset(class="form-group")
                                     input(type="submit" class="btn pull-right" ng-class="{'btn-default': !reportForm.$valid, 'btn-primary': reportForm.$valid}" value="Generate report" ng-click="reportForm.$valid && ReportCtrl.generateReport()")
 
-                                fieldset(class="form-group" ng-hide="true")
-                                    input(type="submit" class="btn pull-right" ng-class="{'btn-default': !reportForm.$valid, 'btn-primary': reportForm.$valid}" value="Generate report (file as param Raw)" ng-click="reportForm.$valid && ReportCtrl.generateReportAlternativeRaw()")
+                                fieldset(class="form-group" )
+                                    input(type="submit" class="btn pull-right" ng-class="{'btn-default': !reportForm.$valid, 'btn-primary': reportForm.$valid}" value="Generate report (file as param Raw, doesn't work)" ng-click="reportForm.$valid && ReportCtrl.generateReportAlternativeRaw()")
 
                                 fieldset(class="form-group")
                                     input(type="submit" class="btn pull-right" ng-class="{'btn-default': !reportForm.$valid, 'btn-primary': reportForm.$valid}" value="Generate report (file as param Base64)" ng-click="reportForm.$valid && ReportCtrl.generateReportAlternativeBase64()")
+
+                                fieldset(class="form-group")
+                                    input(type="submit" class="btn pull-right" ng-class="{'btn-default': !reportForm.$valid, 'btn-primary': reportForm.$valid}" value="Generate report link (browsers prevent code clicks from code)" ng-click="reportForm.$valid && ReportCtrl.generateReportLink()")
+                                    a(ng-show="newReport.hasLink" ng-href="{{newReport.link}}") скачать: {{newReport.link}}
 
                                 //- Live Preview
                                 blockquote()

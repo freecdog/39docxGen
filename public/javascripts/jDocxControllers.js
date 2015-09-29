@@ -146,10 +146,13 @@
             $http.post('/api/docAsParamRaw', $scope.newReport)//, {responseType:'arraybuffer'})
                 .success(function(data) {
 
+                    // TODO raw data sent, but saved incorrectly (0 bytes or 144kb corrupted file)
                     function ab2str(buf) {
                         return String.fromCharCode.apply(null, new Uint8Array(buf));
+                        //return String.fromCharCode.apply(null, new Uint16Array(buf));
                     }
                     var dataRaw = ab2str(data.doc);
+                    //var dataRaw = ab2str(data.doc.data);
                     var blob = new Blob([dataRaw], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
 
                     var url = (window.URL || window.webkitURL).createObjectURL(blob);
@@ -197,8 +200,27 @@
                         target: '_blank',
                         download: 'doc' + $scope.newReport.lastName + '.docx'
                     })[0].click();
+                    //.error(function(a,b,c){console.log("error b64",a,b,c);});
 
                     clearReport();
+                })
+                .error(function(err){
+                    console.log("todo wasn't added, error:", err);
+                });
+        };
+
+        this.generateReportLink = function(){
+            console.log('trying to generate report link:', $scope.newReport);
+            $scope.newReport.createdOn = Date.now();
+
+            $http.post('/api/docAsLink', $scope.newReport)
+                .success(function(data) {
+                    console.log('link', data);
+                    var link = data.link;
+
+                    $scope.newReport.hasLink = true;
+                    $scope.newReport.link = link;
+                    //clearReport();
                 })
                 .error(function(err){
                     console.log("todo wasn't added, error:", err);
