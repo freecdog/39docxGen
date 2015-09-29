@@ -53,9 +53,8 @@ router.post("/doc", function(req, res){
             .generate({type:"nodebuffer"});
 
         var finalFilePath = path.join(dirPath, 'rep' + ip + 'at' + (new Date()).getTime() + '.docx');
-        console.log("zxczxczxczxczxczxczxczx");
         fs.writeFile(finalFilePath, buf, function (err) {
-            console.log("oopopoopppopopopopopoop");
+            if (err) throw err;
             res.sendFile(finalFilePath);
         });
     });
