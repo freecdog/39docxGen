@@ -52,7 +52,7 @@ router.post("/doc", function(req, res){
         var buf = doc.getZip()
             .generate({type:"nodebuffer"});
 
-        var finalFilePath = path.join(dirPath, 'rep' + ip + 'at' + (new Date()).getTime().toString() + '.docx');
+        var finalFilePath = path.join(dirPath, 'rep' + 'at' + (new Date()).getTime().toString() + '.docx');
         fs.writeFile(finalFilePath, buf, function (err) {
             if (err) throw err;
             res.sendFile(finalFilePath);
@@ -89,7 +89,7 @@ router.post("/docAsParamRaw", function(req, res){
         var buf = doc.getZip()
             .generate({type:"nodebuffer"});
 
-        var finalFilePath = path.join(dirPath, 'rep' + ip + 'at' + (new Date()).getTime() + '.docx');
+        var finalFilePath = path.join(dirPath, 'rep' + 'at' + (new Date()).getTime() + '.docx');
         fs.writeFile(finalFilePath, buf, function (err) {
             res.send( {
                 doc: buf
@@ -126,7 +126,7 @@ router.post("/docAsParamBase64", function(req, res){
         var buf = doc.getZip()
             .generate({type:"nodebuffer"});
 
-        var finalFilePath = path.join(dirPath, 'rep' + ip + 'at' + (new Date()).getTime() + '.docx');
+        var finalFilePath = path.join(dirPath, 'rep' + 'at' + (new Date()).getTime() + '.docx');
         fs.writeFile(finalFilePath, buf, function (err) {
             res.send( {
                 doc64: buf.toString('base64')
