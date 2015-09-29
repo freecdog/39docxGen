@@ -18,7 +18,7 @@ function readJSONFile(filepath, callback){
     fs.readFile(filepath, {encoding: "utf8"}, function(err, filedata){
         if (err) {
             console.log("read error:", err);
-            callback(e, null);
+            callback(err, null);
         } else {
             // some hack with first symbol =/
             filedata = filedata.replace(/^\uFEFF/, '');
@@ -34,7 +34,7 @@ function writeJSONFile(filepath, jsondata, callback){
     fs.writeFile(filepath, JSON.stringify(jsondata), {encoding: "utf8"}, function (err) {
         if (err) {
             console.log("write error:", err);
-            callback(e, null);
+            callback(err, null);
         } else {
             console.log('File has been successfully written');
             callback();

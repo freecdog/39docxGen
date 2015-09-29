@@ -24,6 +24,8 @@ router.post("/todo", function(req, res){
 
 // it sends the least bytes (50557 bytes)
 router.post("/doc", function(req, res){
+
+    console.log("asdasdhasiduhaisudhiausdhiuasdhi");
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     //Load the docx file as a binary
@@ -51,7 +53,9 @@ router.post("/doc", function(req, res){
             .generate({type:"nodebuffer"});
 
         var finalFilePath = path.join(dirPath, 'rep' + ip + 'at' + (new Date()).getTime() + '.docx');
+        console.log("zxczxczxczxczxczxczxczx");
         fs.writeFile(finalFilePath, buf, function (err) {
+            console.log("oopopoopppopopopopopoop");
             res.sendFile(finalFilePath);
         });
     });
